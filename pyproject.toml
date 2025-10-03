@@ -1,0 +1,11 @@
+[project]
+name = "blue-dot-test"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "bluedot>=2.0.0",
+    "pathlib>=1.0.1",
+    "pygame>=2.6.1",
+]
