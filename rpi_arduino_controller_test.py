@@ -3,6 +3,20 @@ import serial
 import time
 import pygame
 
+def button_0():
+    print('button 0 pressed')
+
+def button_1():
+    print('buton 1 pressed')
+
+def default_button():
+    print('default')
+
+BUTTON_SWITCHER = {
+    0: button_0,
+    1: button_1
+}
+
 def main():
     # serial channel
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
@@ -33,18 +47,32 @@ def main():
                 print("Joystick disconnected")
                 joystick = None
 
-        # listen for button press
-        if joystick is not None:
-            button_state = joystick.get_button(0)
-            if button_state and not is_button_held:
-                is_button_held = True
-                print("Button held, turning on")
-                ser.write(b"ON\n")
+            buttons_held = set()  # Initialize once, outside the loop
 
-            elif not button_state and is_button_held:
-                is_button_held = False
-                print("Button released, turning off")
-                ser.write(b"OFF\n")
+            # In your main loop:
+            if joystick is not None:
+                for i in range(0, 14):
+                    button_state = joystick.get_button(i)
+                    button_name = f'button_{i}'
+                    was_button_held = button_name in buttons_held
+
+                    if button_state and not was_button_held:
+                        buttons_held.add(button_name)
+                        BUTTON_SWITCHER.get(i, default_button)()
+                    elif not button_state and was_button_held:
+                        buttons_held.remove(button_name)
+
+
+            # button_state = joystick.get_button(0)
+            # if button_state and not is_button_held:
+            #     is_button_held = True
+            #     print("Button held, turning on")
+            #     ser.write(b"ON\n")
+
+            # elif not button_state and is_button_held:
+            #     is_button_held = False
+            #     print("Button released, turning off")
+            #     ser.write(b"OFF\n")
 
         time.sleep(0.005)
 

@@ -9,7 +9,7 @@ PHOTO_PATH.mkdir(parents=True, exist_ok=True)
 
 def main():
     print("Hello from blue-dot-test!")
-    bd = BlueDot()
+    bd = BlueDot(cols=3, rows=1)
     
     picam2 = Picamera2()
     count = 0
